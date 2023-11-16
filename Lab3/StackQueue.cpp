@@ -45,6 +45,7 @@ StackQueue& StackQueue::Clean()
 {
     _firstStack->Clean();
     _secondStack->Clean();
+    return *this;
 }
 
 StackQueue::~StackQueue()

@@ -7,7 +7,9 @@ using std::ostream;
 class RingBufferQueue
 {
 private:
-	RingBuffer* _buffer;
+	RingBuffer* _ringBuffer;
+	int _sizeBuffer;
+	void ResizeBuffer(bool increase);
 
 public:
 	RingBufferQueue();
@@ -23,14 +25,8 @@ public:
 	/// <summary>
 	/// Снять элемент с очереди
 	/// </summary>
-	/// <returns>Очередь</returns>
-	RingBufferQueue& Dequeue();
-
-	/// <summary>
-	/// Очистить очередь
-	/// </summary>
-	/// <returns>Очередь</returns>
-	RingBufferQueue& Clean();
+	/// <returns>Снятый элемент</returns>
+	int Dequeue();
 
 	/// <summary>
 	/// Контроллер меню

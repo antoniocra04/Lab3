@@ -7,13 +7,13 @@ using std::ostream;
 class RingBuffer
 {
 private:
-	int _length;
-	int _capacity;
-	RingBufferItem* _newestItem;
-	RingBufferItem* _oldestItem;
+	int** _data;
+	int _sizeBuffer;
+	int _head;
+	int _tail;
 
 public:
-	RingBuffer();
+	RingBuffer(const int& size = 4);
 	~RingBuffer();
 
 	/// <summary>
@@ -38,8 +38,8 @@ public:
 	/// <summary>
 	/// Удалить элемент
 	/// </summary>
-	/// <returns>Кольцевой буфер</returns>
-	RingBuffer& Pop();
+	/// <returns>Снятый элемент</returns>
+	int Pop();
 
 	/// <summary>
 	/// Изменить размер буфера

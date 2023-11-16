@@ -6,49 +6,54 @@ using namespace std;
 
 RingBufferQueue::RingBufferQueue()
 {
-	RingBuffer* buffer = new RingBuffer;
-	_buffer = buffer;
+    _sizeBuffer = 4;
+    _ringBuffer = new RingBuffer(_sizeBuffer);
 }
 
 RingBufferQueue& RingBufferQueue::Enqueue(const int& value)
 {
-	if (_buffer->GetFreeSpace() == 0)
-	{
-		_buffer->Resize(1);
-	}
-
-	_buffer->Push(value);
-	return *this;
-}
-
-RingBufferQueue& RingBufferQueue::Dequeue()
-{
-	if (_buffer->GetOccupedSpace() > 4)
-	{
-		_buffer->Resize(-1);
-	}
-
-	_buffer->Pop();
-	return *this;
-}
-
-RingBufferQueue& RingBufferQueue::Clean()
-{
-    while (_buffer->GetOccupedSpace())
+    if (!_ringBuffer->GetFreeSpace())
     {
-        _buffer->Pop();
+        ResizeBuffer(true);
     }
+    _ringBuffer->Push(value);
+
+    return *this;
+}
+
+int RingBufferQueue::Dequeue()
+{
+    int result = _ringBuffer->Pop();
+    if (_ringBuffer->GetFreeSpace() <= _sizeBuffer / 2 && _ringBuffer->GetFreeSpace() >= 4)
+    {
+        ResizeBuffer(false);
+    }
+    return result;
+}
+
+void RingBufferQueue::ResizeBuffer(bool increase)
+{
+    _sizeBuffer = increase ? _sizeBuffer * 2 : _sizeBuffer / 2;
+    RingBuffer* newBuffer = new RingBuffer(_sizeBuffer);
+
+    int occupiedSpace = _ringBuffer->GetOccupedSpace();
+    for (int i = 0; i < occupiedSpace; i++)
+    {
+        newBuffer->Push(_ringBuffer->Pop());
+    }
+    delete _ringBuffer;
+    _ringBuffer = newBuffer;
 }
 
 ostream& operator<<(ostream& os, RingBufferQueue& queue)
 {
-	os << *(queue._buffer);
+	os << *(queue._ringBuffer);
 	return os;
 }
 
 RingBufferQueue::~RingBufferQueue()
 {
-    Clean();
+    delete _ringBuffer;
 }
 
 char RingBufferQueue::MenuController()
@@ -60,7 +65,7 @@ char RingBufferQueue::MenuController()
     while (true)
     {
         int value;
-        cout << *(_buffer);
+        cout << *(_ringBuffer);
         cout << menu;
         wrongInput = ValidInput(mode, wrongInput);
         system("cls");
@@ -77,7 +82,7 @@ char RingBufferQueue::MenuController()
             Enqueue(value);
             break;
         case '2':
-            if (_buffer->GetOccupedSpace())
+            if (_ringBuffer->GetOccupedSpace())
             {
                 cout << "Dequeue element: " << Dequeue() << endl;
             }

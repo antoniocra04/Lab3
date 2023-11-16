@@ -4,119 +4,105 @@
 #include "ValidInput.h"
 using namespace std;
 
-RingBuffer::RingBuffer()
+RingBuffer::RingBuffer(const int& size)
 {
-	_capacity = 4;
-	_length = 0;
-	_oldestItem = nullptr;
-	_newestItem = nullptr;
+	_sizeBuffer = size;
+	_data = new int* [_sizeBuffer];
+	_head = -1;
+	_tail = 0;
+	for (int i = 0; i < _sizeBuffer; i++)
+	{
+		_data[i] = nullptr;
+	}
 }
 
 int RingBuffer::GetFreeSpace()
 {
-	return _capacity - _length;
+	if (_head == -1)
+	{
+		return _sizeBuffer;
+	}
+	return _tail > _head ? _sizeBuffer - _tail + _head : _head - _tail;
 }
 
 int RingBuffer::GetOccupedSpace()
 {
-	return _length;
+	return _sizeBuffer - GetFreeSpace();
 }
 
 RingBuffer& RingBuffer::Push(const int& value)
 {
-	RingBufferItem* newItem = new RingBufferItem;
-	newItem->_value = value;
-
-	if (_newestItem == nullptr) {
-		newItem->_next = nullptr;
-		newItem->_prev = nullptr;
-		_length += 1;
-	}
-	else
+	if (_head == _tail)
 	{
-		if (_capacity != _length)
-		{
-			newItem->_next = _newestItem->_next;
-			newItem->_prev = _newestItem;
-			_newestItem->_next = newItem;
-			_length += 1;
-		}
-		else
-		{
-			newItem->_next = _oldestItem->_next;
-			newItem->_prev = _oldestItem->_prev;
-			_newestItem->_next = newItem;
-			delete _oldestItem;
-			_oldestItem = newItem->_next;
-			_newestItem = newItem;
-		}
-
+		_head++;
+		_head %= _sizeBuffer;
 	}
 
-	if (_length == 1)
+	_data[_tail++] = new int(value);
+	_tail %= _sizeBuffer;
+
+	if (_head == -1)
 	{
-		_oldestItem = newItem;
+		_head = _tail - 1;
 	}
-
-	_newestItem = newItem;
 	return *this;
 }
 
-RingBuffer& RingBuffer::Pop()
+int RingBuffer::Pop()
 {
-	if (_length == 0)
+	int result;
+	if (_head == -1)
 	{
-		return *this;
+		cout << "empty buffer" << endl;
+		return 0;
+	}
+	result = *_data[_head];
+	delete _data[_head];
+	_data[_head++] = nullptr;
+
+	_head %= _sizeBuffer;
+	if (_head == _tail)
+	{
+		_head = -1;
 	}
 
-	RingBufferItem* popItem = _oldestItem;
-	if (popItem->_next != nullptr)
-	{
-		_oldestItem = popItem->_next;
-	}
-	_oldestItem->_prev = _newestItem;
-	_newestItem->_next = _oldestItem;
-	_length -= 1;
-
-	return *this;
+	return result;
 }
 
 ostream& operator<<(ostream& os, RingBuffer& buffer)
 {
-	os << "Current list: [ ";
-
-	RingBufferItem* current = buffer._oldestItem;
-
-	for (int i = 0; i < buffer._length; i++)
+	os << "Ring Buffer: [ ";
+	for (int i = 0; i < buffer._sizeBuffer; i++)
 	{
-		os << current->_value << " ";
-		current = current->_next;
-
+		if (buffer._data[i])
+		{
+			os << *buffer._data[i] << " ";
+		}
+		else
+		{
+			os << "* ";
+		}
 	}
-
-	for (int i = 0; i < buffer._capacity - buffer._length; i++)
-	{
-		os << "*" << " ";
-	}
-
-	os << "] length: " << buffer._length << endl;
+	os << "]" << endl;
 
 	return os;
 }
 
 RingBuffer& RingBuffer::Resize(const int& value)
 {
-	_capacity = _capacity + value;
 	return *this;
 }
 
 RingBuffer::~RingBuffer()
 {
-	for (int i = 0; i <= _length; i++)
+	for (int i = 0; i < _sizeBuffer; i++)
 	{
-		Pop();
+		if (_data[i])
+		{
+			delete _data[i];
+		}
 	}
-
+	delete[] _data;
 }
 
 char RingBuffer::MenuController()
