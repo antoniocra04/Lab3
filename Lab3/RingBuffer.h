@@ -6,13 +6,12 @@ using std::ostream;
 
 class RingBuffer
 {
-private:
+public:
 	int** _data;
 	int _sizeBuffer;
 	int _head;
 	int _tail;
 
-public:
 	RingBuffer(const int& size = 4);
 	~RingBuffer();
 
@@ -48,10 +47,4 @@ public:
 	/// <returns>Кольцевой буфер</returns>
 	RingBuffer& Resize(const int& value);
 
-	/// <summary>
-	/// Контроллер меню
-	/// </summary>
-	/// <returns>символ q</returns>
-	char MenuController();
-	friend ostream& operator<<(ostream& os, RingBuffer& buffer);
 };

@@ -1,8 +1,6 @@
-#include <iostream>
 #include "RingBuffer.h"
 #include "RingBufferItem.h"
 #include "ValidInput.h"
-using namespace std;
 
 RingBuffer::RingBuffer(const int& size)
 {
@@ -53,7 +51,6 @@ int RingBuffer::Pop()
 	int result;
 	if (_head == -1)
 	{
-		cout << "empty buffer" << endl;
 		return 0;
 	}
 	result = *_data[_head];
@@ -67,25 +64,6 @@ int RingBuffer::Pop()
 	}
 
 	return result;
-}
-
-ostream& operator<<(ostream& os, RingBuffer& buffer)
-{
-	os << "Ring Buffer: [ ";
-	for (int i = 0; i < buffer._sizeBuffer; i++)
-	{
-		if (buffer._data[i])
-		{
-			os << *buffer._data[i] << " ";
-		}
-		else
-		{
-			os << "* ";
-		}
-	}
-	os << "]" << endl;
-
-	return os;
 }
 
 RingBuffer& RingBuffer::Resize(const int& value)
@@ -105,56 +83,3 @@ RingBuffer::~RingBuffer()
 	delete[] _data;
 }
 
-char RingBuffer::MenuController()
-{
-	const char* menu =
-		"Choose one of activity:\n. - Choose another structure\n1 - Push\n2 - Pop\n3 - Show free space\n4 - Show occupied space\nq - quit\nYour choice: ";
-
-	char mode = '\0';
-	bool bWrongInput = false;
-
-	cout << *this;
-	while (true)
-	{
-		int value;
-		cout << menu;
-		bWrongInput = ValidInput(mode, bWrongInput);
-		system("cls");
-		switch (mode)
-		{
-		case '.':
-			return '.';
-		case '1':
-			cout << "Enter push element: ";
-			while (ValidInput(value))
-			{
-				cout << "Enter correct integer: ";
-			}
-			this->Push(value);
-			break;
-		case '2':
-			if (GetOccupedSpace())
-			{
-				cout << "Pop element: " << this->Pop() << endl;
-			}
-			else
-			{
-				cout << "No element in ring buffer\n";
-			}
-			break;
-		case '3':
-			cout << "Free space: " << this->GetFreeSpace() << endl;
-			break;
-		case '4':
-			cout << "Occupied space: " << this->GetOccupedSpace() << endl;
-			break;
-		case 'q':
-			return 'q';
-		default:
-			bWrongInput = true;
-			break;
-		}
-		cout << *this;
-	}
-	return '\0';
-}

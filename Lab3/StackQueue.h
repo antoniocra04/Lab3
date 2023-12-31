@@ -3,13 +3,15 @@
 
 class StackQueue
 {
-private:
+public:
 	Stack* _firstStack;
 	Stack* _secondStack;
 
+	/// <summary>
+	/// переместить во второй стек
+	/// </summary>
 	void MoveToSecondStack();
 
-public:
 	StackQueue();
 	~StackQueue();
 
@@ -31,11 +33,4 @@ public:
 	/// </summary>
 	/// <returns>Очередь</returns>
 	StackQueue& Clean();
-
-	/// <summary>
-	/// Контроллер меню
-	/// </summary>
-	/// <returns>символ q</returns>
-	char MenuController();
-	friend ostream& operator<<(ostream& os, StackQueue& queue);
 };

@@ -1,7 +1,5 @@
-#include <iostream>
 #include "Stack.h"
 #include "ValidInput.h"
-using namespace std;
 
 Stack::Stack()
 {
@@ -33,8 +31,6 @@ Stack& Stack::Pop()
 {
 	if (_length == 0)
 	{
-		cout << "length is 0"<<endl;
-
 		return *this;
 	}
 
@@ -79,69 +75,4 @@ int Stack::GetLastItem()
 		return NULL;
 	}
 
-}
-
-ostream& operator<<(ostream& os, Stack& stack)
-{
-	os << "Current stack:";
-
-	StackItem* current = stack._lastItem;
-
-	os << endl;
-
-	for (int i = 0; i < stack._length; i++)
-	{
-		os << "|" << current->_value << "|" << endl;
-		current = current->_prev;
-	}
-
-	os << "length: " << stack._length << endl;
-
-	return os;
-}
-
-char Stack::MenuController()
-{
-	const char* menu = "Choose one of activity:\n. - Choose another structure\n1 - Push\n2 - Pop\nq - quit\nYour choice: ";
-	char mode = '\0';
-	bool wrongInput = false;
-
-	cout << *this;
-	while (true)
-	{
-		int value;
-		cout << menu;
-		wrongInput = ValidInput(mode, wrongInput);
-		system("cls");
-		switch (mode)
-		{
-		case '.':
-			return '.';
-		case '1':
-			cout << "Enter push element: ";
-			while (ValidInput(value))
-			{
-				cout << "Enter correct integer: ";
-			}
-			this->Push(value);
-			break;
-		case '2':
-			if (_length == 0)
-			{
-				cout << "No elements in stack!\n";
-			}
-			else
-			{
-				cout << "Pop element: " << this->Pop() << endl;
-			}
-			break;
-		case 'q':
-			return 'q';
-		default:
-			wrongInput = true;
-			break;
-		}
-		cout << *this;
-	}
-	return '\0';
 }

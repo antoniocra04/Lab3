@@ -6,12 +6,16 @@ using std::ostream;
 
 class RingBufferQueue
 {
-private:
+public:
 	RingBuffer* _ringBuffer;
 	int _sizeBuffer;
+
+	/// <summary>
+	/// Изменить размер буфера
+	/// </summary>
+	/// <param name="increase">0 - уменьшить в 2 раза, 1 - увеличить в 2 раза</param>
 	void ResizeBuffer(bool increase);
 
-public:
 	RingBufferQueue();
 	~RingBufferQueue();
 
@@ -27,11 +31,4 @@ public:
 	/// </summary>
 	/// <returns>Снятый элемент</returns>
 	int Dequeue();
-
-	/// <summary>
-	/// Контроллер меню
-	/// </summary>
-	/// <returns>символ q</returns>
-	char MenuController();
-	friend ostream& operator<<(ostream& os, RingBufferQueue& queue);
 };

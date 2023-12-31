@@ -6,11 +6,10 @@ using std::ostream;
 
 class Stack 
 {
-private:
+public:
 	int _length;
 	StackItem* _lastItem;
 
-public:
 	Stack();
 	~Stack();
 
@@ -38,11 +37,4 @@ public:
 	/// </summary>
 	/// <returns>значение элемента</returns>
 	int GetLastItem();
-
-	/// <summary>
-	/// Контроллер меню
-	/// </summary>
-	/// <returns>возвращает q</returns>
-	char MenuController();
-	friend ostream& operator<<(ostream& os, Stack& stack);
 };

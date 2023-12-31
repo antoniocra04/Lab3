@@ -2,23 +2,16 @@
 using namespace std;
 
 template <typename Type>
-bool ValidInput(Type& var, bool wrongInput = false)
+Type ValidInput()
 {
-    if (wrongInput)
-    {
-        cout << "\nPlease enter the correct menu item: ";
-    }
-
-    cin >> var;
-    if (cin.fail() || cin.get() != '\n')
+    Type variable;
+    cin >> variable;
+    while (cin.fail() || cin.get() != '\n')
     {
         cin.clear();
         while (cin.get() != '\n');
-        var = '\0';
-        return true;
+        cout << "Enter correct value: ";
+        cin >> variable;
     }
-    else
-    {
-        return false;
-    }
+    return variable;
 }
